@@ -5,16 +5,33 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
+## necessary tooling for px4
 RUN apt-get update 
 RUN python3 -m pip install --user -U empy pyros-genmsg setuptools
 
+
+## install mavlink-router
+WORKDIR /root
+RUN git clone https://github.com/intel/mavlink-router.git
+WORKDIR /root/mavlink-router
+RUN git submodule update --init --recursive
+RUN apt-get install -y --no-install-recommends git ninja-build pkg-config gcc g++ systemd python3-pip
+RUN pip3 install meson
+RUN meson setup build . --buildtype=release
+RUN ninja -C build
+RUN ninja -C build install
+
+## install microXRCE agent
 WORKDIR /root
 RUN git clone https://github.com/eProsima/Micro-XRCE-DDS-Agent.git
 WORKDIR /root/Micro-XRCE-DDS-Agent/build
-RUN cmake -DCMAKE_BUILD_TYPE=Release .. && make && make install && ldconfig /usr/local/lib/
+RUN cmake -DCMAKE_BUILD_TYPE=Release .. 
+RUN make -j$(($(nproc) - 1))
+RUN make install -j$(($(nproc) - 1))
+RUN ldconfig /usr/local/lib/
 
-# RUN usermod -a -G tty ${USER}
-# RUN usermod -a -G dialout ${USER}
+WORKDIR /root/colcon_ws
 
 
-RUN apt-get update && apt-get install -y clang-format
+
+
