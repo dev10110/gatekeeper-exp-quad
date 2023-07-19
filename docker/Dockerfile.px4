@@ -30,6 +30,8 @@ RUN make -j$(($(nproc) - 1))
 RUN make install -j$(($(nproc) - 1))
 RUN ldconfig /usr/local/lib/
 
+
+
 WORKDIR /root/colcon_ws
 
 
