@@ -1,0 +1,27 @@
+# Dockerfile for setting up julia 
+
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+# install julia
+WORKDIR /root
+RUN wget https://julialang-s3.julialang.org/bin/linux/aarch64/1.9/julia-1.9.2-linux-aarch64.tar.gz 
+RUN tar zxvf julia-1.9.2-linux-aarch64.tar.gz
+RUN ln -s /root/julia-1.9.2/bin/julia /usr/local/bin/julia
+
+## create a julia sysimage
+RUN julia -t auto -e 'using Pkg; Pkg.add("PackageCompiler")'
+RUN julia -t auto -e 'using Pkg; Pkg.add(["OSQP", "SparseArrays"])'
+RUN julia -t auto -e 'using Pkg; Pkg.add("DifferentialEquations")'
+COPY scripts/create_julia_sysimage.jl /root/create_julia_sysimage.jl
+COPY scripts/precompile_julia.jl /root/precompile_julia.jl
+RUN julia /root/create_julia_sysimage.jl
+RUN echo "alias julia='julia -J/root/JuliaSysImage.so'" >> /root/.bashrc
+
+# # julia precompile some functions
+# COPY scripts/gatekeeper/Project.toml /workspaces/isaac_ros-dev/src/gatekeeper/gatekeeper/Project.toml
+# COPY scripts/gatekeeper/Manifest.toml /workspaces/isaac_ros-dev/src/gatekeeper/gatekeeper/Manifest.toml
+# WORKDIR /root/colcon_ws/src/gatekeeper/gatekeeper
+# RUN julia --sysimage /root/JuliaSysImage.so --project -e 'using Pkg; Pkg.instantiate(); Pkg.precompile()'
+
+
