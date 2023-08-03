@@ -16,6 +16,9 @@ source /opt/ros/${ROS_DISTRO}/setup.bash
 echo "source /workspaces/isaac_ros-dev/install/setup.bash" >> ~/.bashrc
 source /workspaces/isaac_ros-dev/install/setup.bash
 
+# set user to access julia
+echo 'alias julia="sudo julia -J/root/JuliaSysImage.so"' >> ~/.bashrc
+
 # sudo apt-get update
 # rosdep update
 

@@ -6,6 +6,7 @@
 # distribution of this software and related documentation without an express
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
+
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
 
@@ -57,3 +58,4 @@ ENV USER_UID=${USER_UID}
 # Give permissions to access tty and dialout
 RUN usermod -aG tty ${USERNAME}
 RUN usermod -aG dialout ${USERNAME}
+

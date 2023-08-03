@@ -5,18 +5,17 @@ FROM ${BASE_IMAGE}
 
 # install julia
 WORKDIR /root
-RUN wget https://julialang-s3.julialang.org/bin/linux/aarch64/1.9/julia-1.9.2-linux-aarch64.tar.gz 
-RUN tar zxvf julia-1.9.2-linux-aarch64.tar.gz
+COPY scripts/install_julia.sh /root/install_julia.sh
+RUN sudo chmod +x install_julia.sh && ./install_julia.sh
+
+# create a symlink to julia
 RUN ln -s /root/julia-1.9.2/bin/julia /usr/local/bin/julia
 
-## create a julia sysimage
-RUN julia -t auto -e 'using Pkg; Pkg.add("PackageCompiler")'
-RUN julia -t auto -e 'using Pkg; Pkg.add(["OSQP", "SparseArrays"])'
-RUN julia -t auto -e 'using Pkg; Pkg.add("DifferentialEquations")'
+# create the sysimage with DiffEq installed
+# RUN julia -e 'using Pkg; Pkg.add("DifferentialEquations")'
 COPY scripts/create_julia_sysimage.jl /root/create_julia_sysimage.jl
 COPY scripts/precompile_julia.jl /root/precompile_julia.jl
 RUN julia /root/create_julia_sysimage.jl
-RUN echo "alias julia='julia -J/root/JuliaSysImage.so'" >> /root/.bashrc
 
 # # julia precompile some functions
 # COPY scripts/gatekeeper/Project.toml /workspaces/isaac_ros-dev/src/gatekeeper/gatekeeper/Project.toml

@@ -1,0 +1,8 @@
+
+# Dockerfile to install libpcl 
+
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+## necessary tooling for px4
+RUN apt-get update  && apt-get install libpcl-dev -y
