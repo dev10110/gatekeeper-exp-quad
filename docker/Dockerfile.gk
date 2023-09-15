@@ -1,0 +1,12 @@
+# adds the gk specific dependencies
+
+
+# Dockerfile for setting up julia 
+
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+RUN python3 -m pip install --upgrade numpy==1.24.2 scipy matplotlib pandas
+RUN python3 -m pip install osqp numba
+RUN python3 -m pip install control
+
