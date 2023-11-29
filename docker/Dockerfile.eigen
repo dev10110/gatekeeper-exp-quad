@@ -1,0 +1,12 @@
+
+# Dockerfile to install libpcl 
+
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
+
+## install eigen3.4
+WORKDIR /workspaces
+RUN git clone https://gitlab.com/libeigen/eigen --branch 3.4.0 --single-branch
+WORKDIR /workspaces/eigen/build
+RUN cmake ..  && sudo make install -j
+
