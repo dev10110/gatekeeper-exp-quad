@@ -6,3 +6,5 @@ FROM ${BASE_IMAGE}
 
 RUN python3 -m pip install --upgrade numpy==1.24.2 scipy matplotlib pandas rosbags
 
+RUN sudo apt-get install silversearcher-ag # TODO(Dev): move this somewhere more reasonable
+
